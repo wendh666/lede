@@ -71,9 +71,9 @@ jobs:
           # ========================固件定制部分========================
           #
           # 示例配置，下面是 diff.config 文件中的内容
-          CONFIG_TARGET_x86=y
-          CONFIG_TARGET_x86_64=y
-          CONFIG_TARGET_x86_64_DEVICE_generic=y
+          CONFIG_TARGET_rockchip=y
+          CONFIG_TARGET_rockchip_armv8=y
+          CONFIG_TARGET_rockchip_armv8_DEVICE_friendlyarm_nanopi-r2s=y
           #
           # ========================固件定制部分结束========================
           #
