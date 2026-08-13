@@ -97,6 +97,7 @@ jobs:
           # CONFIG_PACKAGE_luci-app-rclone_INCLUDE_rclone-webui is not set
           CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_GeoData=y
           # CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_NONE_V2RAY is not set
+          CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Client=y
           CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_V2ray_Plugin=y
           CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Xray=y
           # CONFIG_PACKAGE_luci-app-turboacc is not set
@@ -116,6 +117,7 @@ jobs:
           CONFIG_PACKAGE_ruby-psych=y
           CONFIG_PACKAGE_ruby-stringio=y
           CONFIG_PACKAGE_ruby-yaml=y
+          CONFIG_PACKAGE_shadowsocks-rust-sslocal=y
           CONFIG_PACKAGE_v2ray-geosite=y
           CONFIG_PACKAGE_v2ray-plugin=y
           # CONFIG_PACKAGE_vlmcsd is not set
