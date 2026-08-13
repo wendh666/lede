@@ -97,11 +97,11 @@ jobs:
           # CONFIG_PACKAGE_luci-app-turboacc is not set
           # CONFIG_PACKAGE_luci-app-upnp is not set
           # CONFIG_PACKAGE_luci-app-vlmcsd is not set
+          # CONFIG_PACKAGE_luci-app-vsftpd is not set
           # CONFIG_PACKAGE_luci-app-wol is not set
           # CONFIG_PACKAGE_luci-lib-chartjs is not set
           # CONFIG_PACKAGE_miniupnpd-iptables is not set
           # CONFIG_PACKAGE_nlbwmon is not set
-          # CONFIG_PACKAGE_vsftpd is not set
           CONFIG_PACKAGE_ruby=y
           CONFIG_PACKAGE_ruby-bigdecimal=y
           CONFIG_PACKAGE_ruby-date=y
