@@ -9,7 +9,7 @@ name: OpenWrt-CI
 
 on:
   schedule:
-    - cron: 0 20 * * *
+    - cron: 0 20 * * 1
 
 permissions:
   contents: read
@@ -58,12 +58,86 @@ jobs:
 
       - name: Update feeds
         run: |
+          sed -i '1i src-git kenzo https://github.com/kenzok8/openwrt-packages' feeds.conf.default
+          sed -i '2i src-git small https://github.com/kenzok8/small' feeds.conf.default
           sed -i 's/#src-git helloworld/src-git helloworld/g' ./feeds.conf.default
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
       - name: Generate configuration file
-        run: make defconfig
+        run: |
+          rm -f ./.config*
+          touch ./.config
+          cat >> .config <<EOF
+          #
+          # ========================固件定制部分========================
+          #
+          # 示例配置，下面是 diff.config 文件中的内容
+          CONFIG_TARGET_rockchip=y
+          CONFIG_TARGET_rockchip_armv8=y
+          CONFIG_TARGET_rockchip_armv8_DEVICE_friendlyarm_nanopi-r2s=y
+          # CONFIG_PACKAGE_TURBOACC_INCLUDE_BBR_CCA is not set
+          CONFIG_PACKAGE_bash=y
+          CONFIG_PACKAGE_coreutils-timeout=y
+          # CONFIG_PACKAGE_etherwake is not set
+          CONFIG_PACKAGE_kmod-inet-diag=y
+          # CONFIG_PACKAGE_kmod-ipt-offload is not set
+          # CONFIG_PACKAGE_kmod-nf-conntrack-netlink is not set
+          # CONFIG_PACKAGE_kmod-nf-flow is not set
+          # CONFIG_PACKAGE_kmod-tcp-bbr is not set
+          CONFIG_PACKAGE_libgmp=y
+          CONFIG_PACKAGE_libreadline=y
+          CONFIG_PACKAGE_libruby=y
+          # CONFIG_PACKAGE_luci-app-arpbind is not set
+          # CONFIG_PACKAGE_luci-app-autoreboot is not set
+          # CONFIG_PACKAGE_luci-app-ddns is not set
+          # CONFIG_PACKAGE_luci-app-nlbwmon is not set
+          CONFIG_PACKAGE_luci-app-openclash=y
+          # CONFIG_PACKAGE_luci-app-rclone_INCLUDE_rclone-ng is not set
+          # CONFIG_PACKAGE_luci-app-rclone_INCLUDE_rclone-webui is not set
+          # CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_NONE_V2RAY is not set
+          # CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_NONE_Client is not set
+          CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Client=y
+          CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Xray=y
+          # CONFIG_PACKAGE_luci-app-turboacc is not set
+          # CONFIG_PACKAGE_luci-app-upnp is not set
+          # CONFIG_PACKAGE_luci-app-vlmcsd is not set
+          # CONFIG_PACKAGE_luci-app-vsftpd is not set
+          # CONFIG_PACKAGE_luci-app-wol is not set
+          # CONFIG_PACKAGE_luci-lib-chartjs is not set
+          # CONFIG_PACKAGE_miniupnpd-iptables is not set
+          # CONFIG_PACKAGE_nlbwmon is not set
+          CONFIG_PACKAGE_ruby=y
+          CONFIG_PACKAGE_ruby-bigdecimal=y
+          CONFIG_PACKAGE_ruby-date=y
+          CONFIG_PACKAGE_ruby-digest=y
+          CONFIG_PACKAGE_ruby-enc=y
+          CONFIG_PACKAGE_ruby-pstore=y
+          CONFIG_PACKAGE_ruby-psych=y
+          CONFIG_PACKAGE_ruby-stringio=y
+          CONFIG_PACKAGE_ruby-yaml=y
+          CONFIG_PACKAGE_shadowsocks-rust-sslocal=y
+          # CONFIG_PACKAGE_vlmcsd is not set
+          # CONFIG_PACKAGE_vsftpd is not set
+          CONFIG_PACKAGE_xray-core=y
+          CONFIG_TARGET_KERNEL_PARTSIZE=160
+          CONFIG_TARGET_ROOTFS_PARTSIZE=500
+
+          #
+          # ========================固件定制部分结束========================
+          #
+          EOF
+          sed -i 's/^[ \t]*//g' ./.config
+          make defconfig
+          # 网络配置信息，将从 zzz-default-settings 文件的第2行开始添加
+          sed -i "2i # network config" ./package/lean/default-settings/files/zzz-default-settings
+          # 默认 IP 地址，旁路由时不会和主路由的 192.168.1.1 冲突
+          sed -i "3i uci set network.lan.ipaddr='192.168.3.254'" ./package/lean/default-settings/files/zzz-default-settings
+          sed -i "4i uci set network.lan.netmask='255.255.255.0'" ./package/lean/default-settings/files/zzz-default-settings    # 子网掩码
+          sed -i "5i uci set network.lan.gateway='192.168.3.1'" ./package/lean/default-settings/files/zzz-default-settings  # 默认网关地址（主路由 IP）
+          sed -i "6i uci set network.lan.dns='192.168.3.1'" ./package/lean/default-settings/files/zzz-default-settings  # 默认上游 DNS 地址
+          sed -i "7i uci commit network\n" ./package/lean/default-settings/files/zzz-default-settings
+
 
       - name: Download packages
         run: make download -j16
