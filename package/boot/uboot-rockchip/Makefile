@@ -149,7 +149,8 @@ define U-Boot/nanopi-r4s-rk3399
   $(U-Boot/rk3399/Default)
   NAME:=NanoPi R4S
   BUILD_DEVICES:= \
-    friendlyarm_nanopi-r4s
+    friendlyarm_nanopi-r4s \
+    friendlyarm_nanopi-r4s-enterprise
   DEPENDS:=+PACKAGE_u-boot-$(1):rkbin-rk3399
   ATF:=rk3399_bl31_v1.36.elf
   USE_RKBIN:=1
@@ -444,6 +445,7 @@ define U-Boot/generic-rk3588
   $(U-Boot/rk3588/Default)
   NAME:=Generic RK3588
   BUILD_DEVICES:= \
+    bdy_g98 \
     radxa_e52c \
     radxa_e54c \
     seewo_srcm3588-io \
